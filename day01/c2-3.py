@@ -39,9 +39,3 @@ inch = int (raw_input)               # 2. 연산 전에 str -> int 형으로 저
 cm = inch * 2.54                       # 3. 연산
 print( cm )                               # 4. 출력
 
-# p135. , "문자열".format(값)
-string_a = "age:{}".format(10)
-print(string_a) # age : 10
-string_b = "{} {} {}".format(1, "안녕" , True)
-print(string_b)
-# 주의할점 : {} 개수와 값의 개수는 일치해야 한다.
