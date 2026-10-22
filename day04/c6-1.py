@@ -59,6 +59,7 @@ except :
 finally :
     file.close() # 파일.close() : 파일닫기
 print(file.closed) # False
+# finally 사용 : return 함수종료 , break 반복문종료
 
 
 # 예외처리 조합 
