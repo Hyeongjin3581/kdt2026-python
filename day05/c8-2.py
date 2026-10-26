@@ -33,17 +33,17 @@ class Student2 :
         def __str__(self):
              return  "{} \t {} \t {}".format(self.name , self.get_sum() , self.get_average())
         # 특수한 이름의 메소드, / 비교 메소드 # 1. 총합계 비교 함수 재정의
-        def __eq__(self, value):  # 오버라이딩
+        def __eq__(self, value):  # 오버라이딩   같을 때 사용
              return self.get_sum() == value.get_sum()
-        def __ne__(self, value):
+        def __ne__(self, value): # 같지 않을 때 
              return self.get_sum() != value.get_sum()
-        def __gt__(self, value):
+        def __gt__(self, value): # 클 때  
              return self.get_sum() > value.get_sum()
-        def __ge__(self, value):
+        def __ge__(self, value): # 크거나 같을 때
              return self.get_sum() >= value.get_sum()
-        def __lt__(self, value):
+        def __lt__(self, value): # 작을 때
              return self.get_sum() < value.get_sum()
-        def __le__(self, value):
+        def __le__(self, value): # 작거나 같을 때
              return self.get_sum() <= value.get_sum()
 
 students = [
