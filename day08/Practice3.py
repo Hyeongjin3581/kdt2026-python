@@ -124,31 +124,74 @@ df = pd.DataFrame({
 }, index=['M1', 'M2', 'M3', 'M4'])
 
 df['Membership'] = ['General','General','General','General'] # 행의 크기만큼 작성해줘야 함. 
+df.loc[df['TotalSpent'] >= 300000 , 'Membership']  = 'VIP'
 print(df)
-
-
+#    Member  TotalSpent Membership
+# M1    Kim      150000    General
+# M2    Lee      320000        VIP
+# M3   Park      450000        VIP
+# M4   Choi      210000    General
 
 
 
 # 문제 8: 컬럼명 변경 및 통계 집계
 # 아래 매장 판매 데이터의 컬럼명 'Units'를 '판매수량'으로, 'Discount'를 '할인율'로 rename을 사용해 변경한 뒤,
 # 변경된 '판매수량'의 총합(sum)과 'Grade' 컬럼의 고윳값별 빈도수(value_counts)를 각각 출력하시오.
-# df = pd.DataFrame({
-#     'Item': ['Pen', 'Notebook', 'Eraser', 'Ruler'],
-#     'Units': [120, 45, 80, 30],
-#     'Discount': [0.1, 0.05, 0.2, 0.0],
-#     'Grade': ['A', 'B', 'B', 'A']
-# })
+df = pd.DataFrame({
+    'Item': ['Pen', 'Notebook', 'Eraser', 'Ruler'],
+    'Units': [120, 45, 80, 30],
+    'Discount': [0.1, 0.05, 0.2, 0.0],
+    'Grade': ['A', 'B', 'B', 'A']
+})
+df8 = df.rename(columns={'Units' : '판매수량' , 'Discount' : '할인율'})
+print(df8)
+#        Item  판매수량   할인율 Grade
+# 0       Pen   120  0.10     A
+# 1  Notebook    45  0.05     B
+# 2    Eraser    80  0.20     B
+# 3     Ruler    30  0.00     A
+
+print(df8['판매수량'].sum())
+# 275
+# <bound method IndexOpsMixin.value_counts of 0    A
+
+print(df8['Grade'].value_counts)
+# 1    B
+# 2    B
+# 3    A
+# Name: Grade, dtype: str>
 
 # 문제 9: 데이터 연결 (Concat)
 # 상반기 지점 실적(df_first)과 하반기 지점 실적(df_second)을 세로(행 방향, axis=0)로 연결하되,
 # 기존 인덱스를 무시하고 새롭게 0부터 번호를 매기는 방식(ignore_index=True)으로 연결하여 출력하시오.
-# df_first = pd.DataFrame({'Code': ['S10', 'S20'], 'Revenue': [500, 750]})
-# df_second = pd.DataFrame({'Code': ['S30', 'S40'], 'Revenue': [620, 890]})
+df_first = pd.DataFrame({'Code': ['S10', 'S20'], 'Revenue': [500, 750]})
+df_second = pd.DataFrame({'Code': ['S30', 'S40'], 'Revenue': [620, 890]})
+
+new_df9 = pd.concat([df_first , df_second] , axis=0 , ignore_index=True )
+print(new_df9)
+#   Code  Revenue
+# 0  S10      500
+# 1  S20      750
+# 2  S30      620
+# 3  S40      890
 
 # 문제 10: 데이터 병합 (Merge)
 # 회원 기본 프로필(df_user)과 최근 주문 내역(df_order)을 'UID' 기준으로 병합하되,
 # 양쪽 모두에 존재하는 주문 회원만 결합하는 방식(inner)과 전체 회원을 모두 유지하는 방식(outer)을
 # 각각 수행하여 결측치(NaN) 포함 여부를 비교 출력하시오.
-# df_user = pd.DataFrame({'UID': [101, 102, 103], 'User': ['James', 'Emma', 'Lucas']})
-# df_order = pd.DataFrame({'UID': [102, 103, 104], 'Amount': [15000, 32000, 21000]})
+df_user = pd.DataFrame({'UID': [101, 102, 103], 'User': ['James', 'Emma', 'Lucas']})
+df_order = pd.DataFrame({'UID': [102, 103, 104], 'Amount': [15000, 32000, 21000]})
+
+new_df10 = pd.merge(df_user , df_order , on='UID' , how='inner')
+print(new_df10)
+#    UID   User  Amount
+# 0  102   Emma   15000
+# 1  103  Lucas   32000
+#    UID   User   Amount
+
+new_df10 = pd.merge(df_user , df_order , on='UID' , how='outer')
+print(new_df10)
+# 0  101  James      NaN
+# 1  102   Emma  15000.0
+# 2  103  Lucas    32000.0
+# 3  104    NaN    21000.0
