@@ -58,6 +58,10 @@ print( df.iloc[ 1 , 2 ] ) # busan
 print( df.loc['B'] )     # 1행 = B행
 print( df.loc['B' , 'city'] ) # B행 city열  # busan
 
+# df.loc[ df['FinalScore'] >= 90 ,  'Grade' ]  =  'A+'
+#       └──── 행: 조건 ────┘           └ 열 ┘      └ 새 값 ┘
+#       "90점 이상인 행들의"      "Grade 열을"  "A+로 바꾼다"
+
 # 7] 슬라이싱 , [시작인덱스:끝인덱스] , [ 행슬라이싱 , 열슬라이싱 ]
 print( df.iloc[ 0:2 , 0: 1 ] )
 print( df.loc[ 'A' : 'C' , 'name' : 'age'] )
