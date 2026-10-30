@@ -29,23 +29,30 @@ df.info()
 # 1. 중복 행 제거  , df.drop_duplicates().reset_index( drop=True ) , 
 # df = df.drop_duplicates() # 인덱스 유지
 df = df.drop_duplicates( ).reset_index( drop=True ) # 인덱스 초기화
+
 # 2. 타입변환 ,  df['컬럼명'].astype( 변환할타입 )
 df['사번'] = df['사번'].astype(str)
+
 # 3. 공백 문자( ' ' , '' )는 결측(NaN) 만들기 , 
 # 문자열.strip() 앞뒤 여백/공백 제거 함수
 # 문자열.replace( '기존문자' , '새로운문자' ) 문자열내 기본문자가 존재하면 새로운문자로 치환
 df['이름'] = df['이름'].str.strip()
 df['부서'] = df['부서'].str.strip().replace( '' , None )
+
 # 4. 결측치(NaN) 확인 , df.isnull().sum()
 print( df.isnull().sum() )
+
 # 5. 결측이 포함된 행/열 자체 제거 , df.dropna( axis=0/1 )
 new_df = df.dropna( axis= 0 )
 new_df.info()
-# 6. 결측값 채우기, df['컬럼명'].fillna() , 표본이 부족 하거나 손실 막기 위해 대표값 채우기( 중앙값(수치), 최빈값(범주) )
+# 6. 결측값 채우기, df['컬럼명'].fillna() , 표본이 부족 하거나 손실 막기 위해 대표값 채우기
+# ( 중앙값(수치), 최빈값(범주) )
+
 # 나이 = 수치/중앙값 , 부서 = 범주/최빈값  
 df['나이'] = df['나이'].fillna( df['나이'].median() ) # 이상치 최소화
 df['부서'] = df['부서'].fillna( df['부서'].mode()[0] ) # df['컬럼명'].mode()[0] 최빈값
 print( df )
+
 # 7. 지징된 임계 범위 기준으로 강제 조정 , 임계범위 벗어나면 최솟값(18)/최댓값(60)으로 조정
 df['나이'] = df['나이'].clip( lower=18 , upper=60 ) 
 
