@@ -44,6 +44,7 @@ plt.show()
 # 데이터프레임.corr() # 상관계수 행렬 계산
 numeric_df = df[ [ '나이' , '소득' , '신용점수'] ]# 문자열(범주형) 제외한 수치형만 추출
 corr_matrix = numeric_df.corr() # 상관계수 행렬 계산
+
 # 1) 히트맵, sns.heatmap( 상관계수행렬 , cmap="색상맵" , fmt='.소수점f' , annot=True)
 sns.heatmap( corr_matrix , cmap="coolwarm" , fmt='.2f' , annot=True )
 plt.title("상관계수 히트맵")
