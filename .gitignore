@@ -1,1 +1,4 @@
-*.csv
+/personal
+/day10/train.csv
+/day10/서울특별시 공공자전거 대여이력 정보_2501.csv
+/day10/서울특별시 공공자전거 대여이력 정보_2502.csv
