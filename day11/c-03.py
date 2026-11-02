@@ -1,66 +1,48 @@
-# 예제] 네이버 이미지 검색 결과 크롤링 (동적 페이지 + 스크롤)
+# 동적페이지 라이브러리 설치 
+# pip install playwright  # 셀레니움과 비슷한 동적 페이지 조작 라이브러리 설치
+# playwright install      # 백그라운드용 브라우저( 크로미움 ) 설치
 
-import asyncio  # 비동기 라이브러리 (async/await 실행을 담당)
-from playwright.async_api import async_playwright  # 비동기 방식의 playwright (브라우저 자동 조작)
+import asyncio          # 비동기 라이브러리 
+from playwright.async_api import async_playwright # 비동기 동적 페이지 라이브러리 
 
-# 크롤링할 주소: https://search.naver.com/search.naver?where=image&query=메이플스토리 렌
-#   where=image : 이미지 검색 탭
-#   query=메이플스토리 렌  : 검색어
-# 개발자도구(F12)로 찾은 클래스명
-#   박스(이미지 1개 단위) : tile_item
-#   이미지               : _fe_image_tab_content_thumbnail_image
-#   제목                 : info_title
+# 예제3] 동적 페이지 크롤링 , 대기/이벤트 존재하는 상태
+# 1) 크롤링할 페이지 주소 가져온다. 파라미터 분석 ,ssc=검색결과탭메뉴 , query=검색어
+url = "https://search.naver.com/search.naver?ssc=tab.image.all&query=메이플스토리"
+# 2) 비동기 페이지들을 동기화로 제어하는 함수 만들기
+# async def 함수명() : # 함수 선언하고 동기화
+async def run( ) :
+    item_list = [ ]
+    # 2-1) async_playwright() 실행 하고 종료 되기 전까지 동기화 처리 지원 
+    async with async_playwright() as p : 
+        # 2-2) 크로미움( 구글 회사 제공 하는 백그라운드용 오픈소스 브라우저 )
+        # await p.chromim.launch( headless = True백그라운드모드 /False뷰모드 ) 
+        browser = await p.chromium.launch( headless = False )
+        # 2-3) 현재 실행된 크로미움의 새로운 페이지(빈 페이지) 열기 , .new_page() 
+        page = await browser.new_page() 
+        # 2-4) 빈 페이지에 특정한 URL 주소 대입/이동 , .goto( url )
+        await page.goto( url )
+        # 3) 스크롤 내리기 , 2번
+        for i in range( 2 ) : 
+            await page.wait_for_timeout( 3000 ) # page.wait_for_timeout( 밀리초 ):  밀리초 만큼 대기상태 함수
 
+            # await page.evaluate( "JS코드삽입")
+            # window.scorllTo( X가로 , Y세로 ) : 스크롤 이동 함수 
+            # document.body.scrollHeight : 현재 페이지의 스크롤 세로높이
+            # window.scrollTo( 0 , document.body.scrollHeight ) : 현재 스크롤을 페이지의 가장 하단으로 이동
+            await page.evaluate( "window.scrollTo( 0 , document.body.scrollHeight )")
 
-async def naverRun():  # async def : 비동기 함수 선언 (안에서 await 사용 가능)
-    # async_playwright() 실행 → with 블록이 끝나면 playwright 자동 종료
-    async with async_playwright() as p:
-        # 1) 크로미움 브라우저 실행 (headless=False : 브라우저 창을 눈으로 보이게 실행)
-        browser = await p.chromium.launch(headless=False)
+            # 4) 특정 마크업 가져오기 , .query_selector 한개 추출 , query_selector_all 여러개 추출 
+            items = await page.query_selector_all(".tile_item") # 이미지와사진이름 포함하는 마크업 여러개 
 
-        # 2) 크롤링할 페이지 주소
-        url = 'https://search.naver.com/search.naver?where=image&query=메이플스토리 렌'
+            # 5) 반복문 이용한 사진/제목
+            for item in items : 
+                title = await item.query_selector( '.info_title')
+                title = await title.inner_text() if title else '제목없음'  # 특정한 마크업의 사이 텍스트 추출( .innerText )
+                img = await item.query_selector( 'img._fe_image_tab_content_thumbnail_image')
+                img = await img.get_attribute( 'src') if img else '이미지없음'  #특정한 마크업의 속성값 추출 
+                item_list.append( { '제목' : title , "이미지링크" : img } )
+    return item_list 
 
-        # 3) 새로운 페이지(탭) 열기
-        page = await browser.new_page()
-
-        # 4) 해당 url로 이동
-        await page.goto(url)
-
-        # 5) 스크롤 2번 내리기
-        #    네이버 이미지는 스크롤을 내려야 다음 이미지가 추가로 로딩되는 동적 페이지
-        for i in range(2):
-            await page.wait_for_timeout(3000)  # 3초 대기 (이미지가 로딩될 시간 주기)
-            # 자바스크립트 실행 : 페이지 맨 아래(전체 높이)까지 스크롤
-            await page.evaluate("window.scrollTo( 0 , document.body.scrollHeight )")
-
-        # 6) 이미지 박스(.tile_item) 전부 가져오기 → 리스트로 반환
-        items = await page.query_selector_all('.tile_item')
-
-        # 결과를 담을 빈 리스트
-        image_list = []
-
-        # 7) 여러 개의 박스(item)에서 제목과 이미지 주소 하나씩 꺼내기
-        for item in items:
-            # 7-1) 제목 태그 찾기 (.info_title 안의 .txt)
-            title_tag = await item.query_selector('.info_title .txt')
-            # 제목 태그가 있으면 글자를 가져오고, 없으면 '제목없음'
-            image_title = await title_tag.inner_text() if title_tag else '제목없음'
-
-            # 7-2) 이미지 태그 찾기 (img 태그 중 해당 클래스를 가진 것)
-            image_tag = await item.query_selector('img._fe_image_tab_content_thumbnail_image')
-            # 이미지 태그가 있으면 src(이미지 주소) 속성값을 가져오고, 없으면 '링크없음'
-            image_link = await image_tag.get_attribute('src') if image_tag else '링크없음'
-
-            # 7-3) 딕셔너리로 만들어 리스트에 담기
-            image_list.append({'제목': image_title, '링크': image_link})
-
-        # 8) 브라우저 닫기
-        await browser.close()
-
-        # 9) 결과 출력
-        print(image_list)
-
-
-# 비동기 함수 실행 (asyncio.run : 일반 파이썬 코드에서 async 함수를 실행하는 입구)
-asyncio.run(naverRun())
+# *** asyncio.run( 동기화함수() ) ***
+item_list = asyncio.run( run() )
+print( item_list )
