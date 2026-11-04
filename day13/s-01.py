@@ -20,7 +20,7 @@ df = pd.read_csv('./day13/Fish.csv')
 df.info()
 
 # 2) 모델 학습에 사용할 데이터 추출
-feature = ['Length2']        # 특성 : Length2 (물고기의 대각선 cm)  # 사이킷런 모델 구조상 학습할 특성은
+feature = ['Length2']        # 특성 : Length2 (물고기의 대각선 cm)  
 target = 'Weight'               # 타깃 : Weight(물고기의 무게 g)
 
 # 3) 독립변수 / 입력변수 / 특성변수   , x y 구조
@@ -45,7 +45,7 @@ print( model.coef_ )    #   [30.43452394]
 print( model.intercept_)  # -477.30634978973194
 
 # 9) 학습한 모델의 예측 , 새로운 x값을 넣어서 y값 구하기 , model.predict( 2차원특성자료 )
-print( model.predict( [ [30] ] ) ) # 만약에 물고 길이가 30일때 무게 예측 / 2차원 배열이라 [ [] ] 로 사용.
+print( model.predict( [ [30] ] ) ) # 만약에 물고기 길이가 30일때 무게 예측 / 2차원 배열이라 [ [] ] 로 사용.
 # *) 단순회귀모델 : y = ax + b , [30.43452394]*[30] + [-477.30634978973194]
 
 import matplotlib.pyplot as plt
@@ -64,6 +64,10 @@ Y_pred = model.predict( X_test) # 테스트용 특성 넣어서 테스트 예측
 import numpy as np
 from sklearn.metrics import mean_squared_error # 평균 오차( 정답지와 예측 )
 rmse = np.sqrt( mean_squared_error(Y_test , Y_pred)) 
-print("rmse:" , rmse)
+print("rmse:" , rmse)  # rmse: 160.01413830813442 --> 예측이 실제 무게와 평균적으로 약 160g 차이남. 
 # 해석 : 모델이 실제 무게와 얼마나 틀렸는지 평균 오차
+
 # - 결정계수(R SCORE)
+from sklearn.metrics import r2_score # 결정계수
+r2 = r2_score( Y_test , Y_pred ) # 정답지와 예측값
+print("r2 : " , r2) # r2 :  0.8199897860284712  --> 약 82%
