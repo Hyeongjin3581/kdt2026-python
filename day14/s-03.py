@@ -75,4 +75,65 @@ print( 'r2 : ' , r2_score(Y_test , Y_pred2)) # 0.07276663213888512
 # RMSE 구하기
 from sklearn.metrics import root_mean_squared_error
 rmse = root_mean_squared_error(Y_test, Y_pred)
-print(f"RMSE : {rmse:.2f}") # 63.18
+print(f"RMSE : {rmse:.2f}") # 63.18 <-- 약 63g 만큼의 오차가 발생한다 . 
+
+# 4] 특성이 많아짐에 따라 특성간의 단위 표준화( 0 ~ 1 )
+from sklearn.preprocessing import StandardScaler
+ss = StandardScaler() # 객체 생성
+ss.fit( X_train_poly ) # 항이 추가된 특성으로 학습
+X_train_scaled = ss.transform(X_train_poly)
+X_test_scaled = ss.transform(X_test_poly)
+print(X_train_poly[0]) # [ 16.2          4.5924       2.6316     262.44        74.39688   42.63192     21.09013776  12.08535984   6.92531856]
+print(X_train_scaled[0]) # [-1.14878727 -1.06273398 -1.10441696 -0.94414637 -1.10959682 -1.06072372  -0.91561258 -1.05610367 -1.02825083]
+# 평균보다 작으면
+
+
+# 5] 규제 : 기울기(가중치) 크기에 페널티를 부여 특성 오차 확인하여 특성 완/제외
+# 1) 릿지
+from sklearn.linear_model import Ridge
+# 2) alpha(규제강도) : 값이 커질수록 가중치/기울기를 0에 가깝게 규제 : 완만
+# 반복하여 최적의 규제 강도 찾기
+alpha_list = [0.001 , 0.01 ,0.1 , 1 , 10 , 100]
+for alpha in alpha_list:
+    model = Ridge(alpha= alpha) # 강도 설정하여 릿지 모델 객체 생성
+    model.fit(X_train_scaled , Y_train) # 학습
+    # 훈련데이터 점수와 테스트용 점수 격차 적은 alpha 찾기
+    print( "------ 훈련용 학습 데이터 점수 VS 테스트용 학습 데이터 점수 ------")
+    print( "Train R2 : " , model.score( X_train_scaled , Y_train ) )
+    print( "Test R2 : " , model.score( X_test_scaled , Y_test ) )
+
+#     ------ 훈련용 학습 데이터 점수 VS 테스트용 학습 데이터 점수 ------
+# Train R2 :  0.9833178330364799
+# Test R2 :  0.9719673683013292
+# ------ 훈련용 학습 데이터 점수 VS 테스트용 학습 데이터 점수 ------
+# Train R2 :  0.9832177842561537
+# Test R2 :  0.972086342891765
+# ------ 훈련용 학습 데이터 점수 VS 테스트용 학습 데이터 점수 ------
+# Train R2 :  0.9819643609322335
+# Test R2 :  0.9721136345597018
+# ------ 훈련용 학습 데이터 점수 VS 테스트용 학습 데이터 점수 ------
+# Train R2 :  0.978134182449039
+# Test R2 :  0.9746911246115147
+# ------ 훈련용 학습 데이터 점수 VS 테스트용 학습 데이터 점수 ------
+# Train R2 :  0.9627465402404453
+# Test R2 :  0.9695134506348434
+# ------ 훈련용 학습 데이터 점수 VS 테스트용 학습 데이터 점수 ------
+# Train R2 :  0.9256280358033501
+# Test R2 :  0.9488049472059307
+
+
+# 3) 라쏘 모델
+from sklearn.linear_model import Lasso
+lasso = Lasso( alpha=10) # 임의의 강도 지정 라쏘 모델 객체 생성
+lasso.fit(X_train_scaled , Y_train)
+print( lasso.score(X_train_scaled , Y_train))
+print( lasso.score(X_test_scaled , Y_test))
+
+# 제거된 특성
+import numpy as np
+zero_features = np.sum( lasso.coef_== 0 )
+print( '기울기 0으로 제거된 특성 수 :  ' , zero_features)
+
+# 다항에서는 스케일링 필수. 
+# 특성이 적으면(과소적합/모델 단순) --> 항추가(PolynomialFeatures) / degree
+# 특성이 많으면(과대적합/모델 복잡) --> 규제(L1라쏘 , L2릿지) / alpha
