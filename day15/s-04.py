@@ -84,3 +84,7 @@ print('r2 : ' , best_model.score(X_test , Y_test)) # r2 :  0.9749901840662052
 
 # 11) 서빙 (학습된 모델 재사용), 학습된 모델 저장하고 다른곳에서 호출
 # 연구 / 학습  : 코랩(고사양GPU)에서 학습 --> 실제 서버(FAST API) 에서 호출
+import joblib
+# 1. 모델 저장한다. # joblib.dump( 저장할모델 , 경로.pkl )
+joblib.dump( best_model , './day14/fish_model.pkl' )
+# 2. 다른 파이썬 파일에서 저장된 모델 불러오기 . s-05.py
