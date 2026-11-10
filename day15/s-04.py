@@ -81,3 +81,6 @@ print( grid.best_score_ ) # 교차 검증에서 평균 점수 반환 / 0.9715658
 # 7. 최적 모델로 평가 
 print('r2 : ' , best_model.score(X_train , Y_train)) # r2 :  0.9881969696079508
 print('r2 : ' , best_model.score(X_test , Y_test)) # r2 :  0.9749901840662052
+
+# 11) 서빙 (학습된 모델 재사용), 학습된 모델 저장하고 다른곳에서 호출
+# 연구 / 학습  : 코랩(고사양GPU)에서 학습 --> 실제 서버(FAST API) 에서 호출
