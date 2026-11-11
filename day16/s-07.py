@@ -61,7 +61,7 @@ pipe = Pipeline([
 # 하이퍼 파라미터 후보군  , 식별자__매개변수명" : [후보값 , 후보값]
 param_grid = {"model__C" : [0.01 , 0.1 , 1 , 10.0 , 100.0]}
 # K 폴드 이용한 교차 검증 분할기(다중분류 : StratifiedGroupKFold)
-from sklearn.model_selection import KFold , StratifiedGroupKFold
+from sklearn.model_selection import StratifiedKFold
 cv = StratifiedKFold(n_splits=5 , shuffle=True , random_state=42)
 # 그리드서치
 from sklearn.model_selection import GridSearchCV
