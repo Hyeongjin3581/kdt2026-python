@@ -29,3 +29,25 @@ import numpy as np
 print( np.round( Y_pred_proba[:3] , 3 )) # np.round( 리스트 , 자릿수 ) 
 print( model.classes_ ) # 정답지 경우의수 , 타깃의 클래스/값
 # ['Bream' 'Parkki' 'Perch' 'Pike' 'Roach' 'Smelt' 'Whitefish']
+
+# 로지스틱회귀 평가지표 
+from sklearn.metrics import accuracy_score, classification_report, f1_score , precision_score , recall_score
+# 1) 정확도 : 전체 예측 건수 중 맞힌 정답의 비율 (TP+TN) / 전체
+print(accuracy_score( Y_test , Y_pred )) # 0.8125
+# 2) 정밀도 : 예측 한 것중 실제로 맞힌 비율 (TP) / (TP+FP)
+print(precision_score(Y_test , Y_pred , average="macro")) # 0.6309523809523808
+# 3) 재현율 : 실제 정답인것 중에 모델이 놓치지 않고 찾아낸 비율 TP/ TP+FN
+print(recall_score(Y_test , Y_pred , average="macro")) # 0.7012987012987013
+# 4) f1점수  / 표준 : 정밀도와 재현율간의 조화 조정 / (2 * 정밀도 * 재현율)/(정밀도 + 재현율)
+print(f1_score(Y_test, Y_pred, average="macro", zero_division=0)) # 0.6609105180533751
+
+## 4대 평가지표는 혼동행렬에 사용됨. 
+# 혼동행렬 시각화
+import matplotlib.pyplot as plt
+from sklearn.metrics import ConfusionMatrixDisplay
+# ConfusionMatrixDisplay.from_predictions( 정답지 , 예측치)
+ConfusionMatrixDisplay.from_predictions( Y_test,Y_pred)
+plt.show()
+
+## 리포트 (평가 지도 보고서)
+print(classification_report(Y_test , Y_pred))
