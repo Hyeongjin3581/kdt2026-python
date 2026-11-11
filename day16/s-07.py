@@ -15,7 +15,17 @@ ss = StandardScaler()
 X_train_scaled = ss.fit_transform(X_train)
 X_test_scaled = ss.transform(X_test)
 
-# 4) 로지스틱 회귀 = 이진분류 또는 다중분류 자동선택된다 .
+# 4) 로지스틱 회귀 = 이진(시그모이드) 또는 다중(소프트맥스) 에서 자동 선택 된다.
+# L2규제(릿지): 손실(오차)함수 계산 한다. C = 1.0 기본값 / 하이퍼파라미터
+# 계산반복수(경사하강법) : 최적의 가중치/기울기 찾기 위한 계산 반복수 , 기본값 100 / 권장 1000 ~ 3000
+# 경사하강법 : 기울기(가중치) 변경 하면서 최적의 기울기/가중치 찾는 과정 
 from sklearn.linear_model import LogisticRegression
-model = LogisticRegression
-model.fit(X_train_scaled , Y_train)
+model = LogisticRegression( C=1.0 , max_iter=1000 , random_state=42 ) 
+model.fit( X_train_scaled , Y_train )
+Y_pred = model.predict( X_test_scaled )
+print( Y_pred[ : 3 ] ) # ['Bream' 'Perch' 'Smelt']
+Y_pred_proba = model.predict_proba( X_test_scaled  )
+import numpy as np
+print( np.round( Y_pred_proba[:3] , 3 )) # np.round( 리스트 , 자릿수 ) 
+print( model.classes_ ) # 정답지 경우의수 , 타깃의 클래스/값
+# ['Bream' 'Parkki' 'Perch' 'Pike' 'Roach' 'Smelt' 'Whitefish']
