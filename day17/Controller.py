@@ -20,3 +20,7 @@ async def save( item:dict ):
 @router.put("/update")
 async def update( item:dict ):
     return item_service.update( item )
+#4 ) 삭제
+@router.delete("/delete")
+async def delete (id:int):
+    return item_service.delete(id)
