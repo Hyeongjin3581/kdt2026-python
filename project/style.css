@@ -1,0 +1,142 @@
+/* 1. 색상 / 공통 값 */
+:root {
+    --bg: #f4f6f9;
+    --card: #ffffff;
+    --text: #1d2433;
+    --sub: #6b7385;
+    --line: #e2e6ee;
+    --accent: #2f5bea;
+    --accent-soft: #e9efff;
+    --error: #d6453d;
+    --radius: 14px;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg: #12151c;
+        --card: #1c212b;
+        --text: #eef1f7;
+        --sub: #9aa3b5;
+        --line: #2d3442;
+        --accent: #6d8dff;
+        --accent-soft: #232c45;
+        --error: #ff7a70;
+    }
+}
+
+* { box-sizing: border-box; margin: 0; }
+
+body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Noto Sans KR', system-ui, sans-serif;
+    line-height: 1.5;
+}
+
+.container {
+    max-width: 520px;
+    margin: 0 auto;
+    padding: 48px 16px 32px;
+}
+
+/* 2. 머리말 */
+.header { margin-bottom: 24px; }
+.eyebrow { color: var(--accent); font-weight: 700; font-size: 14px; }
+.header h1 { font-size: 26px; margin: 4px 0 8px; }
+.desc { color: var(--sub); font-size: 15px; }
+
+/* 3. 카드 / 입력 */
+.card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-bottom: 16px;
+}
+
+.field { display: block; margin-bottom: 18px; }
+.label { display: block; font-size: 14px; font-weight: 500; margin-bottom: 6px; }
+
+input, select {
+    width: 100%;
+    padding: 12px 14px;
+    font: inherit;
+    color: var(--text);
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+}
+input:focus, select:focus { outline: 2px solid var(--accent); border-color: transparent; }
+input:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* 동별 선택 가능 범위 안내 */
+.range { display: block; margin-top: 6px; font-size: 13px; color: var(--accent); }
+.range:empty { display: none; }
+
+.input-unit { display: flex; align-items: center; gap: 10px; }
+.unit { color: var(--sub); font-size: 14px; white-space: nowrap; }
+
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.chip {
+    padding: 6px 12px;
+    font: inherit;
+    font-size: 13px;
+    color: var(--accent);
+    background: var(--accent-soft);
+    border: 0;
+    border-radius: 999px;
+    cursor: pointer;
+}
+.chip small { color: var(--sub); margin-left: 2px; }
+.chip:disabled { opacity: 0.35; cursor: not-allowed; }
+
+.more { margin-bottom: 20px; }
+.more summary { cursor: pointer; color: var(--sub); font-size: 14px; margin-bottom: 12px; }
+.row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.row .field { margin-bottom: 8px; }
+.hint { color: var(--sub); font-size: 13px; }
+
+.submit {
+    width: 100%;
+    padding: 14px;
+    font: inherit;
+    font-weight: 700;
+    color: #fff;
+    background: var(--accent);
+    border: 0;
+    border-radius: 10px;
+    cursor: pointer;
+}
+.submit:disabled { opacity: 0.6; cursor: wait; }
+
+/* 4. 결과 */
+.result { text-align: center; }
+.result-label { color: var(--sub); font-size: 14px; }
+.price { font-size: 36px; font-weight: 700; color: var(--accent); margin: 4px 0; }
+.summary { color: var(--sub); font-size: 14px; margin-bottom: 16px; }
+.metric {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+    text-align: left;
+}
+.badge {
+    padding: 4px 10px;
+    font-size: 14px;
+    background: var(--accent-soft);
+    border-radius: 8px;
+    white-space: nowrap;
+}
+.metric-desc { color: var(--sub); font-size: 12px; }
+
+/* 5. 오류 / 꼬리말 */
+.error { color: var(--error); font-size: 14px; margin-bottom: 16px; }
+.footer { color: var(--sub); font-size: 12px; text-align: center; margin-top: 24px; }
+
+@media (max-width: 400px) {
+    .header h1 { font-size: 22px; }
+    .price { font-size: 30px; }
+    .card { padding: 20px 16px; }
+}

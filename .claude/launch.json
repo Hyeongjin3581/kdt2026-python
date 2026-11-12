@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "apt-api",
+      "runtimeExecutable": "C:\\Users\\poll3\\AppData\\Local\\Python\\pythoncore-3.15-64\\python.exe",
+      "runtimeArgs": ["project/AppStart.py"],
+      "port": 8000
+    },
+    {
+      "name": "apt-web",
+      "runtimeExecutable": "C:\\Users\\poll3\\AppData\\Local\\Python\\pythoncore-3.15-64\\python.exe",
+      "runtimeArgs": ["-m", "http.server", "5500", "--directory", "project"],
+      "port": 5500
+    }
+  ]
+}

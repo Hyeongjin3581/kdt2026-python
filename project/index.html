@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>영등포구 아파트 시세 예측</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <main class="container">
+        <!-- 1. 머리말 -->
+        <header class="header">
+            <p class="eyebrow">AI 실거래가 예측</p>
+            <h1>영등포구 아파트, 지금 얼마일까?</h1>
+            <p class="desc">동을 고르면 그 동에서 실제 거래된 평수 · 층 범위 안에서만 입력할 수 있어요. 실거래 데이터 9,079건으로 학습한 모델이 예상 거래가를 알려드려요.</p>
+        </header>
+
+        <!-- 2. 입력 폼 -->
+        <form id="predictForm" class="card">
+            <!-- 2-1) 법정동 : 서버(/api/dongs)에서 목록 받아와 채움 -->
+            <label class="field">
+                <span class="label">지역 (법정동)</span>
+                <select id="dong" required>
+                    <option value="">불러오는 중...</option>
+                </select>
+                <span class="range" id="dongInfo">동을 먼저 선택하세요</span>
+            </label>
+
+            <!-- 2-2) 평수 : 전용면적(평) 입력 , 서버에는 ㎡ 로 변환해서 전송 -->
+            <div class="field">
+                <span class="label">전용면적 (평)</span>
+                <div class="input-unit">
+                    <input type="number" id="pyeong" step="any" placeholder="동을 먼저 선택하세요" required disabled>
+                    <span class="unit" id="sqmText">= 0㎡</span>
+                </div>
+                <span class="range" id="areaRange"></span>
+                <div class="chips">
+                    <button type="button" class="chip" data-sqm="59" disabled>25평형 <small>전용 59㎡</small></button>
+                    <button type="button" class="chip" data-sqm="84" disabled>34평형 <small>전용 84㎡</small></button>
+                    <button type="button" class="chip" data-sqm="114" disabled>43평형 <small>전용 114㎡</small></button>
+                </div>
+            </div>
+
+            <!-- 2-3) 층 -->
+            <label class="field">
+                <span class="label">층</span>
+                <div class="input-unit">
+                    <input type="number" id="floor" step="1" placeholder="동을 먼저 선택하세요" required disabled>
+                    <span class="unit">층</span>
+                </div>
+                <span class="range" id="floorRange"></span>
+            </label>
+
+            <!-- 2-4) 상세 조건 : 모델에 필요하지만 동별 기본값으로 채워둠 -->
+            <details class="more">
+                <summary>상세 조건 (선택)</summary>
+                <div class="row">
+                    <label class="field">
+                        <span class="label">건축년도</span>
+                        <input type="number" id="buildYear" step="1" required disabled>
+                        <span class="range" id="buildRange"></span>
+                    </label>
+                    <label class="field">
+                        <span class="label">계약년도</span>
+                        <select id="contractYear">
+                            <option value="2026" selected>2026</option>
+                            <option value="2025">2025</option>
+                            <option value="2024">2024</option>
+                        </select>
+                    </label>
+                </div>
+                <p class="hint">건축년도는 해당 동 거래의 중앙값으로 자동 입력돼요.</p>
+            </details>
+
+            <button type="submit" class="submit" id="submitBtn" disabled>예상 가격 보기</button>
+        </form>
+
+        <!-- 3. 결과 : 처음엔 숨김 , 예측 후 표시 -->
+        <section id="result" class="card result" hidden>
+            <p class="result-label">예상 거래가</p>
+            <p class="price" id="priceText">-</p>
+            <p class="summary" id="summaryText">-</p>
+            <div class="metric">
+                <span class="badge">R² <strong id="r2Text">-</strong></span>
+                <span class="metric-desc">모델 결정계수 (테스트 데이터 기준) · 1에 가까울수록 실제 거래가를 잘 설명해요</span>
+            </div>
+        </section>
+
+        <!-- 4. 오류 메시지 -->
+        <p id="errorText" class="error" hidden></p>
+
+        <footer class="footer">
+            데이터 : 서울 열린데이터광장 「서울시 부동산 실거래가 정보」 영등포구 아파트 (2024 ~ 2026) · 모델 : 다항 선형회귀
+        </footer>
+    </main>
+
+    <!-- axios : 비동기 통신 -->
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.7.9/dist/axios.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
