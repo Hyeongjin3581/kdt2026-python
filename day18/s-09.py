@@ -38,3 +38,28 @@ plt.show()
 # sample = 값     ,  해당 노드의 데이터 총 개수 
 #  Values <= [ 개수 , 개수 ], 해당 노드에 도달한 특성 값으로 분류한 특성들의 개수
 
+
+# 3) 규제 : 가지치기 ( 루트 개수 제한 )
+model = DecisionTreeClassifier(
+    max_depth=3,  #트리의 최대 깊이를 3으로 제한하여 복잡도 낮추기
+    min_samples_leaf=10, # 리프노트(마지막노드)
+    criterion="gini",
+    random_state=42,
+)
+model.fit(X_train , Y_train)
+print( "Train Acc : " , model.score(X_train , Y_train))
+print( "Test Acc : " , model.score(X_test , Y_test))
+# Train Acc :  0.8456802001154512
+# Test Acc :  0.8407692307692308
+
+# 4) 타깃 / 종속 클래스의 불균형 (레드 / 화이트 와인 개수 / 비율 다르다)
+model = DecisionTreeClassifier(
+    max_depth=3 , min_samples_leaf=10 , criterion="gini",random_state=42,
+    class_weight="balanced" # 클래스 빈도에 반비례하여 가중치를 자동 부여하여 불균형 보정
+)
+model.fit(X_train , Y_train)
+print( "Train Acc : " , model.score(X_train , Y_train))
+print( "Test Acc : " , model.score(X_test , Y_test))
+# Train Acc :  0.787569751779873
+# Test Acc :  0.7946153846153846
+# 성능이 (5%) 떨어짐 
