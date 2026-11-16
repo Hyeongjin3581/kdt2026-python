@@ -50,3 +50,11 @@ print( f1_score(Y_test , Y_pred , average='macro'))
 # Test Acc  : 0.8523076923076923   # 학습 - 테스트 => 0.03 => 3% (10% 아래로 과적합 억제)
 # 0.8192436040044494
 
+# 5) 예측하기 
+new_wine = pd.DataFrame([
+    [11.5 , 2.3 , 3.1] , [13.8 , 11.2 , 3.3]
+])
+new_pred= model.predict( new_wine )
+print('예측1 : ' , new_pred[0]) #  0.0 : 레드 (당도 2.3 낮음)
+print('예측2 : ' , new_pred[1]) #  1.0 : 화이트 (당도 11.2 높음)
+# 알코올 / 당도 / 산도 를 비교했을 때 , 레드와 화이트 와인을 0 과 1로 나타냄
