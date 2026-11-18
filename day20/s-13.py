@@ -40,7 +40,7 @@ arr[:, 1].reshape(-1, 1)    # [[3] [5]]  → 1차원을 2차원으로 바꾸기
 import matplotlib.pyplot as plt
 plt.scatter( X_train_scaled[ : , 4 ] ,X_train_scaled[: , 1] ,c=train_labels)
 plt.scatter( X_test_scaled[ : , 4 ] ,X_test_scaled[: , 1] ,c="red" , marker="*")
-plt.show()
+# plt.show()
 
 # 4) 최적의 K(군집/그룹) 수 찾기 VS 지도학습( F1 분류 / R2회귀 )
 from sklearn.metrics import silhouette_score
@@ -52,7 +52,21 @@ for k in range( 2, 20 ) : # range( 시작값 : 끝값-1 )
     sse_list.append( k_temp.inertia_) # 군집 결과에 각 샘플과 중심점 거리 제곱의 합
     sil_list.append( silhouette_score( X_train_scaled , preds) ) # 실루엣 점수를 저장
 plt.plot( range(2, 20) , sse_list , marker='o' )
-plt.show()
+# plt.show()
 
 plt.plot( range(2, 20) , sil_list , marker='o' )
-plt.show()
+# plt.show()
+# sse : 엘보우지점 (기울기가 완만하게 꺾이는 변곡점 ) 5 ~ 10
+# 실루엣 계수(스코어) : 높은 값 일 수록 이상적 
+# 두 차트 해석하여 최적의 k 해석 --> 대략 5
+# 최적 k 군집하기
+best_model = KMeans( n_clusters=5 )
+pred = best_model.fit_predict( X_train_scaled ) 
+print( pred[:10] ) # [4 1 1 2 3 2 1 2 2 2]
+
+# 5) HDBSCAN # k-means 다르게 밀도 기반으로 군집, 이상치(-1) 자동 탐지
+from sklearn.cluster import HDBSCAN
+# model = HDBSCAN( min_cluster_size=군집으로 인정할 최소 인원 (기본 5, 최소 2) → 미만이면 노이즈(-1) , min_samples=핵심 점으로 보기 위한 주변 이웃 수 (밀도 기준) → 클수록 노이즈 증가
+hdb_model = HDBSCAN( min_cluster_size=15 , min_samples=5)
+hdb_pred  = hdb_model.fit_predict( X_train_scaled )
+print( hdb_pred )
