@@ -25,11 +25,11 @@ from kiwipiepy import Kiwi # 0.설치 : pip install kiwipiepy
 kiwi = Kiwi()   # 1. 한국어 형태소 분석기 객체 생성
 for word in ['가성비', '내돈내산', '총알배송']:  # 3. 사전 학습에 없는 단어 추가
     # kiwi.add_user_word('새로운단어','품사키워드')
-    kiwi.add_user_sord(word,'NNG')
+    kiwi.add_user_word(word,'NNG')
 # 4. 불용어 : 핵심 의미가 없는 형태소를 1차적으로 걸러내기 위해
 from kiwipiepy.utils import Stopwords
 kiwi_stopwords = Stopwords()
-custom_stopwords = {'기미끼히잉' , '예?' , '티~원'}
+custom_stopwords = {'그냥' , '예?' , '티~원'}
 # 5. kiwi 이용한 형태소 분석 함수
 def tokenize_kiwi ( text ):
     # kiwi.tokenize( 분석할 문장 , stopwords=불용어객체)
@@ -45,5 +45,13 @@ def tokenize_kiwi ( text ):
                 # 파이썬 삼항연산자 ( if 조건 else 거짓 )
                 word = t.form + '다' if t.tag in { 'VV' , 'VA' } else t.form
                 result.append(word) 
+    return result
+
+test_word = df_sample['cleand_review'].iloc[0]
+print( test_word )
+print( tokenize_kiwi( test_word ) )
+
+# 마감이 안좋아요 실밥도 많고 바느질도 부족한 부분이 몇군데 있네요 교환받기 귀찮아서 그냥 씁니다
+# ['마감', '바느질', '부족', '부분', '교환', '귀찮다']
 
 
