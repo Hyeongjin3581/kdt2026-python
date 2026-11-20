@@ -54,15 +54,6 @@ for k in range( 2, 20 ) : # range( 시작값 : 끝값-1 )
 plt.plot( range(2, 20) , sse_list , marker='o' )
 # plt.show()
 
-plt.plot( range(2, 20) , sil_list , marker='o' )
-# plt.show()
-# sse : 엘보우지점 (기울기가 완만하게 꺾이는 변곡점 ) 5 ~ 10
-# 실루엣 계수(스코어) : 높은 값 일 수록 이상적 
-# 두 차트 해석하여 최적의 k 해석 --> 대략 5
-# 최적 k 군집하기
-best_model = KMeans( n_clusters=5 )
-pred = best_model.fit_predict( X_train_scaled ) 
-print( pred[:10] ) # [4 1 1 2 3 2 1 2 2 2]
 
 # 5) HDBSCAN # k-means 다르게 밀도 기반으로 군집 , 이상치(-1) 자동 탐지 
 from sklearn.cluster import HDBSCAN
