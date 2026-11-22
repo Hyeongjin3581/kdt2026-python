@@ -58,10 +58,10 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import f1_score
 model = LogisticRegression(C=1.0, max_iter=1000, random_state=42)
 model.fit(X_train_tfidf, Y_train)
-print(model.score(X_train_tfidf, Y_train))
-print(model.score(X_test_tfidf, Y_test))
+print('train 정확도 : ', model.score(X_train_tfidf, Y_train))
+print('test 정확도 : ', model.score(X_test_tfidf, Y_test))
 Y_pred = model.predict(X_test_tfidf)
-print(f1_score(Y_test, Y_pred))
+print('f1 : ', f1_score(Y_test, Y_pred))
 
 # [단계 5] 새로운 영화 리뷰 문장 실시간 감성 예측 테스트
 # 1. 아래 3개의 새로운 영화 리뷰 문장 리스트(new_reviews)를 정의하고, [단계 1]과 동일한 정규표현식 정제 과정을 적용하여 cleaned_new 리스트를 생성하세요.
@@ -88,4 +88,5 @@ for i in range(len(new_reviews)):
         contents = '부정(0)'
     else:
         contents = '중립(애매함)'
-    print(new_reviews[i], contents, pos, probs[i][0])
+    print('리뷰 : ', new_reviews[i])
+    print('감정분석 : ', contents, ', 긍정확률 : ', pos, ', 부정확률 : ', probs[i][0])
